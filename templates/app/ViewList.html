@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Todo tasks </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   </head>
   <body>
     <nav class="nav">
         <a class="nav-link active" aria-current="page" href="/list">Home</a>
         <a class="nav-link" href="/log/log">Log</a>
-        <a class="nav-link disabled">{{request.user}}</a>
+        <a class="nav-link disabled">Username : {{request.user}}</a> 
 
     </nav>
     <button data-bs-toggle="modal" data-bs-target="#AddTaskModal">Add Task</button>
@@ -106,8 +106,8 @@
             <div class="modal-body">
                 <form action="/list" method="post">
                     {% csrf_token %}
-                    {% for i in todoform %} 
-                        {{i}}<br>
+                    {% for i in todoform %}  
+                        {{i.label_tag}} {{i}}    <br>
                     {% endfor %}<br>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </form>

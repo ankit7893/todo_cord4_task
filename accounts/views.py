@@ -1,3 +1,4 @@
+from random import randint, random
 from accounts.models import Profile
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
@@ -8,11 +9,14 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.decorators import login_required
-# Create your views here.
+
+global otp 
+global user 
+from django.http import HttpResponseRedirect
 
 @login_required
 def home(request):
-    return render(request , 'home.html')
+    return render(request , 'accounts/home.html')
 
 
 
@@ -20,10 +24,9 @@ def login_attempt(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        # email = request.POST.get('email') 
 
         user_obj = User.objects.filter(username = username).first() 
-        # print(user.__dict__)
+
         if user_obj is None:
             messages.success(request, 'User not found.')
             return redirect('/accounts/login')
@@ -35,17 +38,23 @@ def login_attempt(request):
         if not profile_obj.is_verified:
             messages.success(request, 'Profile is not verified check your mail.')
             return redirect('/accounts/login')
-
+        global user 
         user = authenticate(username = username , password = password)
-        # send_otp_for_login()
         if user is None:
             messages.success(request, 'Wrong password.')
             return redirect('/accounts/login')
+        email = User.objects.filter(username = username).values_list('email',flat=True)
+        email = list(email)[0]  
+        global otp
+        otp = randint(1000,9999)
+        send_otp_for_login(email, otp)  
+        print("user is " , user)
+        return render(request, 'accounts/otp_check.html', {'user':user}) 
         
-        login(request , user)
-        return redirect('/')
+        # login(request , user)
+        # return redirect('/')
 
-    return render(request , 'login.html')
+    return render(request , 'accounts/login.html')
 
 def register_attempt(request):
 
@@ -77,21 +86,20 @@ def register_attempt(request):
             print(e)
 
 
-    return render(request , 'register.html')
+    return render(request , 'accounts/register.html')
 
 def success(request):
-    return render(request , 'success.html')
+    return render(request , 'accounts/success.html')
 
 
 def token_send(request):
-    return render(request , 'token_send.html')
+    return render(request , 'accounts/token_send.html')
 
 
 
 def verify(request , auth_token):
     try:
         profile_obj = Profile.objects.filter(auth_token = auth_token).first()
-    
 
         if profile_obj:
             if profile_obj.is_verified:
@@ -108,13 +116,7 @@ def verify(request , auth_token):
         return redirect('/')
 
 def error_page(request):
-    return  render(request , 'error.html')
-
-
-
-
-
-
+    return  render(request , 'accounts/error.html')
 
 
 def send_mail_after_registration(email , token):
@@ -124,11 +126,29 @@ def send_mail_after_registration(email , token):
     recipient_list = [email]
     send_mail(subject, message , email_from ,recipient_list )
     
-# def send_otp_for_login(email , otp): 
-#     subject = 'for login use this otp'
-#     message = f'{otp} is your otp'
-#     email_from = settings.EMAIL_HOST_USER
-#     recipient_list = [email]
-#     send_mail(subject, message , email_from ,recipient_list ) 
+def send_otp_for_login(email , otp): 
+    subject = 'for login use this otp'
+    message = f'{otp} is your otp'
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [email]
+    send_mail(subject, message , email_from ,recipient_list ) 
     
+
+# def verify_otp(request,user):
+def verify_otp(request):
+    if request.method == "POST":
+        global user 
+        otp_rec = request.POST.get('otp')
+        if int(otp_rec)== otp:
+            print("vvvverified ")
+            login(request , user)
+            return redirect('/')
+        else:
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    else:
+        return render(request, 'accounts/otp_check.html')
+
+            
+
+
 

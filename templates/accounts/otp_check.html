@@ -1,0 +1,23 @@
+{% extends "accounts/base.html"%}
+
+    {% block content %}
+
+
+    <div class="global-container">
+        <div class="card login-form">
+        <div class="card-body">
+            <h1>OTP Verification</h1>
+            <form action="/verify_otp" method="post">
+                {% csrf_token %}
+                <label for="">please enter otp sent in email for login : </label>
+                <input type="text" name="otp" id="" maxlength="4"> <br> <br> 
+
+                <input type="submit" value="submit">
+            </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+
+    {% endblock %}

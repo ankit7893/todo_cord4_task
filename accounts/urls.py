@@ -9,7 +9,7 @@ urlpatterns = [
     path('token' , token_send , name="token_send"),
     path('success' , success , name='success'),
     path('verify/<auth_token>' , verify , name="verify"),
-    path('error' , error_page , name="error")
-
-
+    path('error' , error_page , name="error"),
+    # path('verify_otp/<str:user>', verify_otp, name = 'verify_otp')
+    path('verify_otp', verify_otp, name = 'verify_otp')
 ]
