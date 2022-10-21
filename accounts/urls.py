@@ -11,5 +11,6 @@ urlpatterns = [
     path('verify/<auth_token>' , verify , name="verify"),
     path('error' , error_page , name="error"),
     # path('verify_otp/<str:user>', verify_otp, name = 'verify_otp')
-    path('verify_otp', verify_otp, name = 'verify_otp')
+    path('verify_otp', verify_otp, name = 'verify_otp'),
+    path('user_logout', user_logout , name = "user_logout")
 ]

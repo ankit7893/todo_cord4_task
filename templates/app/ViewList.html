@@ -11,6 +11,7 @@
         <a class="nav-link active" aria-current="page" href="/list">Home</a>
         <a class="nav-link" href="/log/log">Log</a>
         <a class="nav-link disabled">Username : {{request.user}}</a> 
+        <a href="{% url 'user_logout' %}"> logout </a> 
 
     </nav>
     <button data-bs-toggle="modal" data-bs-target="#AddTaskModal">Add Task</button>

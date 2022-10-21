@@ -65,3 +65,5 @@ class TodoListShare(View):
         user = User.objects.get(id=int(request.POST['user']))  
         share_permission = TodoShareModal.objects.create(task=task, user=user, permission=request.POST['permission']) 
         return redirect('/list')
+
+

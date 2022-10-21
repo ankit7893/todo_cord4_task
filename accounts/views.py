@@ -7,7 +7,7 @@ from .models import *
 import uuid
 from django.conf import settings
 from django.core.mail import send_mail
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.decorators import login_required
 
 global otp 
@@ -17,7 +17,6 @@ from django.http import HttpResponseRedirect
 @login_required
 def home(request):
     return render(request , 'accounts/home.html')
-
 
 
 def login_attempt(request):
@@ -139,16 +138,25 @@ def verify_otp(request):
     if request.method == "POST":
         global user 
         otp_rec = request.POST.get('otp')
-        if int(otp_rec)== otp:
-            print("vvvverified ")
-            login(request , user)
+        try:
+            if int(otp_rec)== otp:
+                print("vvvverified ")
+                login(request , user)
+                return redirect('/')
+            else:
+                return HttpResponseRedirect(request.META['HTTP_REFERER'])
+        except Exception as e:
+            print(e)
             return redirect('/')
-        else:
-            return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
     else:
         return render(request, 'accounts/otp_check.html')
 
             
 
-
+@login_required
+def user_logout(request):
+    logout(request)
+    # return HttpResponseRedirect(reverse('index'))
+    return redirect('/') 
 

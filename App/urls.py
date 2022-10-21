@@ -7,4 +7,5 @@ urlpatterns = [
     path('listedit/<int:pk>',TodoListEdit.as_view()),
     path('list-delete/<int:pk>',TodoListDelete.as_view(), name='todolistdeleteview'),
     path('list-share/<int:pk>',TodoListShare.as_view()),
+    # path('logout',  )
 ]
